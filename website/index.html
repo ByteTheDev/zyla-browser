@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zyla Browser: two pages, one window</title>
+  <meta name="description" content="Zyla Browser is a tabbed browser for Windows, built on the WebView2 engine. Split view, a passwords vault kept on your PC, and a keyboard-first design.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Imbue:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/logo.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-bar">
+  <a class="wordmark" href="#top" aria-label="Zyla Browser, top of page">
+    <img src="assets/logo.png" width="28" height="28" alt="">
+    <span>Zyla</span>
+  </a>
+  <nav aria-label="Main">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#questions">Questions</a>
+    <a href="https://github.com/GumballGaming/zyla-browser">Source</a>
+  </nav>
+  <a class="button button-small" href="https://github.com/GumballGaming/zyla-browser#build-from-source">Build it</a>
+</header>
+
+<main id="top">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title" class="hero-title">
+      <span class="hero-half hero-half-start">Two pages,</span>
+      <figure class="hero-frame">
+        <img src="assets/sidebar-screen.png" width="1604" height="962"
+             alt="Zyla Browser's new-tab page with the sidebar, bookmarks and recently visited pages">
+      </figure>
+      <span class="hero-half hero-half-end">one window.</span>
+    </h1>
+    <div class="hero-foot">
+      <p class="lede">Zyla is a tabbed browser for Windows. Put any tab beside the next one with split view, keep your logins in a vault on your own PC, and do most things from the keyboard.</p>
+      <a class="button" href="https://github.com/GumballGaming/zyla-browser#build-from-source">Build it from source</a>
+    </div>
+  </section>
+
+  <section id="features" class="fields" aria-label="Features">
+    <div class="field field-ink">
+      <p class="field-text">Tabs where you want them.</p>
+      <h2 class="field-phrase">Sidebar or strip.</h2>
+    </div>
+    <div class="field field-ink field-mirror">
+      <p class="field-text">Ctrl+\ shows this tab beside the next tab in its Space. Press it again to end the split. Split view is not kept across restarts.</p>
+      <h2 class="field-phrase">Two pages, one screen.</h2>
+    </div>
+    <div class="field field-ink">
+      <p class="field-text">Passwords and cards are encrypted for your Windows user with DPAPI. Card security codes are never stored. Fill is an explicit action on HTTPS pages.</p>
+      <h2 class="field-phrase">Logins stay on your PC.</h2>
+    </div>
+    <div class="field field-ink field-mirror">
+      <p class="field-text">Each tab is its own WebView2 instance, so a busy or crashed page does not freeze the others.</p>
+      <h2 class="field-phrase">A stuck page stays alone.</h2>
+    </div>
+  </section>
+
+  <figure class="band">
+    <img src="assets/dnd-after.png" width="1606" height="1066"
+         alt="Zyla's History page open in a tab, with the sidebar tabs on the left">
+    <figcaption>History, opened from the sidebar. Ctrl+H goes straight to it.</figcaption>
+  </figure>
+
+  <section id="how" class="stages" aria-labelledby="stage-title">
+    <div class="stage-copy">
+      <h2 id="stage-title" class="stage-title" aria-live="polite">Open a tab with Ctrl+T.</h2>
+      <p class="stage-note" id="stage-note">A new tab opens in the sidebar. Type a search or a web address; anything that is not an address goes to Google.</p>
+    </div>
+    <figure class="stage-frame">
+      <img id="stage-image" src="assets/sidebar-after-click.png" width="1606" height="1066"
+           alt="Zyla with three tabs listed in the sidebar, the last one just opened">
+    </figure>
+    <div class="stage-track">
+      <input id="stage-range" type="range" min="0" max="3" step="1" value="0"
+             aria-label="Choose a step to see what it shows" aria-valuetext="Open a tab">
+      <div class="stage-names" aria-hidden="true">
+        <span data-stage="0">Open</span>
+        <span data-stage="1">History</span>
+        <span data-stage="2">Top strip</span>
+        <span data-stage="3">Bookmark</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="questions" class="questions" aria-labelledby="questions-title">
+    <div class="qa-row">
+      <h2 id="questions-title" class="questions-title">Questions, answered.</h2>
+    </div>
+    <div class="qa-row">
+      <h3 class="qa-question">Which engine does it use?</h3>
+      <p class="qa-answer">Page content is rendered by the system WebView2 engine, which is Chromium. The browser chrome is a small web page of its own.</p>
+    </div>
+    <div class="qa-row">
+      <h3 class="qa-question">Where are my tabs, history and logins kept?</h3>
+      <p class="qa-answer">Open tabs and zoom levels are saved to a session file in your local app data folder. Cookies, logins, bookmarks and history live in the WebView2 profile in the same folder.</p>
+    </div>
+    <div class="qa-row">
+      <h3 class="qa-question">Can I install extensions?</h3>
+      <p class="qa-answer">You can add unpacked local extensions from Sidebar settings. They start after you restart Zyla. WebView2 does not host extension toolbar or popup buttons.</p>
+    </div>
+    <div class="qa-row">
+      <h3 class="qa-question">What is not there yet?</h3>
+      <p class="qa-answer">No find in page, no private window, no sync, and no prompt to save a password automatically. Background tabs stay loaded, so memory grows with the number of open tabs.</p>
+    </div>
+    <div class="qa-row">
+      <h3 class="qa-question">Where do downloads go?</h3>
+      <p class="qa-answer">To your Downloads folder. A download never overwrites an existing file.</p>
+    </div>
+    <div class="qa-row">
+      <h3 class="qa-question">Does it run on Mac or Linux?</h3>
+      <p class="qa-answer">No. The host is built for Windows, and WebView2 is the only engine wired up.</p>
+    </div>
+  </section>
+
+  <section class="closing" aria-labelledby="closing-title">
+    <div class="closing-copy">
+      <h2 id="closing-title" class="closing-sentence">Build Zyla on your own PC.</h2>
+      <p class="closing-note">You need Rust (MSVC), Bun and the WebView2 runtime, which Windows 11 already has. The build guide lists each step.</p>
+      <a class="button" href="https://github.com/GumballGaming/zyla-browser#build-from-source">Read the build guide</a>
+    </div>
+    <figure class="closing-frame">
+      <img src="assets/right-end.png" width="1194" height="813"
+           alt="Zyla's tab strip above the toolbar, with a new-tab page below">
+    </figure>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="foot-top">
+    <p class="foot-invite">Keep your tabs. Lose the clutter.</p>
+    <ul class="foot-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#questions">Questions</a></li>
+    </ul>
+  </div>
+  <p class="foot-credits">Set in Public Sans and Imbue (Google Fonts, SIL Open Font License). Screenshots are from Zyla Browser.</p>
+  <p class="foot-name" aria-hidden="true">Zyla</p>
+</footer>
+
+<script>
+  (function () {
+    var stages = [
+      { title: "Open a tab with Ctrl+T.", note: "A new tab opens in the sidebar. Type a search or a web address; anything that is not an address goes to Google.", src: "assets/sidebar-after-click.png", alt: "Zyla with three tabs listed in the sidebar, the last one just opened" },
+      { title: "See what you visited with Ctrl+H.", note: "History lists the pages you opened and filters them by title or address. Clear history clears it all at once.", src: "assets/dnd-after.png", alt: "Zyla's History page open in a tab beside the other tabs in the sidebar" },
+      { title: "Move tabs to a strip on top.", note: "Settings, then Tabs, then Top puts the tabs in a strip above the toolbar. The sidebar icon in the strip switches back.", src: "assets/right-end.png", alt: "Zyla's tab strip above the toolbar, with the new-tab page below" },
+      { title: "Bookmark a page with Ctrl+D.", note: "Bookmarks are listed on the new-tab page, next to the pages you visited recently.", src: "assets/sidebar-screen.png", alt: "Zyla's new-tab page showing bookmarks and recently visited pages" }
+    ];
+    var range = document.getElementById("stage-range");
+    var title = document.getElementById("stage-title");
+    var note = document.getElementById("stage-note");
+    var image = document.getElementById("stage-image");
+    var names = document.querySelectorAll(".stage-names [data-stage]");
+
+    function show(i) {
+      var s = stages[i];
+      title.textContent = s.title;
+      note.textContent = s.note;
+      image.src = s.src;
+      image.alt = s.alt;
+      range.setAttribute("aria-valuetext", s.title);
+      names.forEach(function (n, k) { n.classList.toggle("is-current", k === i); });
+    }
+    range.addEventListener("input", function () { show(Number(range.value)); });
+    show(0);
+
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var items = document.querySelectorAll(".field-text, .field-phrase, .stage-copy, .stage-frame, .qa-row, .closing-sentence, .closing-note, .closing .button, .foot-invite, .foot-name");
+    if (reduce || !("IntersectionObserver" in window)) return;
+    document.documentElement.classList.add("js-motion");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    items.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+</body>
+</html>

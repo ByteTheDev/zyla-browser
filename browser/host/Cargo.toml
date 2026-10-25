@@ -1,0 +1,29 @@
+[package]
+name = "tsgpui-browser-host"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Zyla Browser: tabbed system-WebView browser host"
+
+[[bin]]
+name = "tsgpui-browser-host"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "=1.0.104"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+url = "2.5"
+rfd = "0.15"
+zeroize = "1"
+tao = "=0.37.1"
+wry = { version = "=0.57.0", features = ["devtools"] }
+
+[build-dependencies]
+winres = "0.1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+opt-level = 3
+strip = "symbols"

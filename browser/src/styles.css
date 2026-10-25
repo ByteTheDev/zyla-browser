@@ -1,0 +1,1366 @@
+@font-face {
+  font-family: "Public Sans";
+  src: url("../assets/public-sans-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Dark is the default. System follows the OS; Light and Dark are chosen in the sidebar settings. */
+:root,
+html[data-theme="dark"] {
+  --base: #121317;
+  --ink: #f4f5f9;
+  --ink-2: rgba(244, 245, 249, 0.70);
+  --ink-3: rgba(244, 245, 249, 0.46);
+  --row-hover: rgba(255, 255, 255, 0.06);
+  --row-active: rgba(255, 255, 255, 0.12);
+  --hairline: rgba(255, 255, 255, 0.10);
+  --field: rgba(6, 6, 10, 0.5);
+  --field-focus: rgba(6, 6, 10, 0.7);
+  --pop: #1c1d22;
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+  --sheen: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+html[data-theme="light"] {
+  --base: #eef0f4;
+  --ink: #15161b;
+  --ink-2: rgba(21, 22, 27, 0.72);
+  --ink-3: rgba(21, 22, 27, 0.48);
+  --row-hover: rgba(0, 0, 0, 0.05);
+  --row-active: rgba(255, 255, 255, 0.92);
+  --hairline: rgba(0, 0, 0, 0.09);
+  --field: rgba(255, 255, 255, 0.65);
+  --field-focus: rgba(255, 255, 255, 0.95);
+  --pop: #ffffff;
+  --shadow: 0 14px 34px rgba(20, 24, 40, 0.18);
+  --sheen: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+@media (prefers-color-scheme: light) {
+  html[data-theme="system"] {
+    --base: #eef0f4;
+    --ink: #15161b;
+    --ink-2: rgba(21, 22, 27, 0.72);
+    --ink-3: rgba(21, 22, 27, 0.48);
+    --row-hover: rgba(0, 0, 0, 0.05);
+    --row-active: rgba(255, 255, 255, 0.92);
+    --hairline: rgba(0, 0, 0, 0.09);
+    --field: rgba(255, 255, 255, 0.65);
+    --field-focus: rgba(255, 255, 255, 0.95);
+    --pop: #ffffff;
+    --shadow: 0 14px 34px rgba(20, 24, 40, 0.18);
+    --sheen: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* Each Space's tint is one accent colour. The sidebar fades from a faint wash of it into the base. */
+html[data-tint="graphite"] { --tint: #aeb6c8; }
+html[data-tint="indigo"] { --tint: #8f9cff; }
+html[data-tint="forest"] { --tint: #7fd1a6; }
+html[data-tint="rose"] { --tint: #ff9fb6; }
+html[data-tint="amber"] { --tint: #f5c265; }
+
+.swatch[data-tint="graphite"] { --c: #aeb6c8; }
+.swatch[data-tint="indigo"] { --c: #8f9cff; }
+.swatch[data-tint="forest"] { --c: #7fd1a6; }
+.swatch[data-tint="rose"] { --c: #ff9fb6; }
+.swatch[data-tint="amber"] { --c: #f5c265; }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--base);
+  color: var(--ink);
+  font: 13px/1.4 "Public Sans", system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+svg {
+  display: block;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 1px solid var(--tint);
+  outline-offset: -1px;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  opacity: 0;
+  transition: opacity 420ms var(--ease);
+}
+
+body[data-startup="ready"] .app {
+  opacity: 1;
+}
+
+.startup {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--tint) 10%, transparent), transparent 42%),
+    var(--base);
+  opacity: 1;
+  transition: opacity 480ms var(--ease), visibility 480ms;
+}
+
+body[data-startup="ready"] .startup {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.startup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-8px);
+  animation: startup-arrive 700ms var(--ease) both;
+}
+
+.startup-mark {
+  position: relative;
+  display: grid;
+  width: 76px;
+  height: 76px;
+  place-items: center;
+  margin-bottom: 26px;
+}
+
+.startup-mark img {
+  position: relative;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 14px rgba(67, 126, 255, 0.24));
+  animation: startup-breathe 2.4s ease-in-out infinite;
+}
+
+.startup-glow {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background: #3978ff;
+  filter: blur(20px);
+  opacity: 0.12;
+  animation: startup-glow 2.4s ease-in-out infinite;
+}
+
+.startup-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  animation: startup-details 420ms ease 420ms both;
+}
+
+.startup-caption {
+  margin: 7px 0 0;
+  color: var(--ink-3);
+  font-size: 12px;
+  animation: startup-details 420ms ease 520ms both;
+}
+
+.startup-spinner {
+  width: 14px;
+  height: 14px;
+  margin-top: 22px;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  border-top-color: #5689ff;
+  border-radius: 50%;
+  animation: startup-details 420ms ease 620ms both, startup-spin 900ms linear infinite;
+}
+
+@keyframes startup-arrive {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(-8px); }
+}
+
+@keyframes startup-details {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes startup-breathe {
+  0%, 100% { transform: scale(0.96); }
+  50% { transform: scale(1.06); }
+}
+
+@keyframes startup-glow {
+  0%, 100% { transform: scale(0.8); opacity: 0.08; }
+  50% { transform: scale(1.25); opacity: 0.2; }
+}
+
+@keyframes startup-spin {
+  to { transform: rotate(360deg); }
+}
+
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar column: the Arc-style rail on the left, full height. */
+.sidebar {
+  position: relative;
+  flex: none;
+  width: var(--sb-w, 260px);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tint) 11%, var(--base)) 0%, var(--base) 58%);
+}
+
+.app[data-sidebar-side="right"] { flex-direction: row-reverse; }
+.app[data-sidebar-side="right"] .resizer { right: auto; left: 0; }
+.sb-head { cursor: grab; touch-action: none; }
+.sb-head:active { cursor: grabbing; }
+
+.app[data-sidebar="hidden"] .sidebar,
+.app[data-tabs="top"] .sidebar {
+  display: none;
+}
+
+.sb-head {
+  flex: none;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 14px;
+}
+
+.sb-logo {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+
+.space-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.sb-btn {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--ink-2);
+  transition: background-color 260ms var(--ease), color 260ms var(--ease);
+}
+
+.sb-btn:hover {
+  background: var(--row-hover);
+  color: var(--ink);
+}
+
+.sb-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 8px 8px;
+  scrollbar-width: none;
+}
+
+.sb-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Favorites: a grid of favicon tiles. */
+.favorites {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 2px 2px 4px;
+}
+
+.tile {
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: background-color 260ms var(--ease);
+}
+
+.tile:hover {
+  background: var(--row-hover);
+}
+
+.tile.active {
+  background: var(--row-active);
+  box-shadow: var(--sheen);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* A visible group after another visible group gets a hairline and a little air above it. */
+.group:not([hidden]) ~ .group:not([hidden]) {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--hairline);
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 34px;
+  padding: 0 6px 0 8px;
+  border-radius: 10px;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 260ms var(--ease), color 260ms var(--ease), box-shadow 260ms var(--ease), opacity 200ms var(--ease);
+}
+
+.row:hover {
+  background: var(--row-hover);
+  color: var(--ink);
+}
+
+.row.active {
+  background: var(--row-active);
+  color: var(--ink);
+  box-shadow: var(--sheen);
+}
+
+.row.dragging {
+  opacity: 0.45;
+}
+
+.row.drop-before {
+  box-shadow: inset 0 2px 0 var(--tint);
+}
+
+/* The other pane of a split view: marked with the Space's tint while the active pane is the one in focus. */
+.row.split:not(.active) {
+  color: var(--ink);
+  box-shadow: inset 3px 0 0 var(--tint);
+}
+
+.row .title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row .close {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  color: var(--ink-2);
+  opacity: 0;
+  transition: opacity 200ms var(--ease), background-color 200ms var(--ease);
+}
+
+.row:hover .close,
+.row.active .close,
+.row:focus-visible .close {
+  opacity: 1;
+}
+
+.row .close:hover {
+  background: var(--row-active);
+  color: var(--ink);
+}
+
+/* Favicons come from the site's own /favicon.ico. A letter stands in when there is none. */
+.fav {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.fav img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.fav-letter {
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--tint) 28%, transparent);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.tile .fav,
+.tile .fav img {
+  width: 20px;
+  height: 20px;
+}
+
+.tile .fav-letter {
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+}
+
+.new-row {
+  width: 100%;
+  height: 34px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 8px;
+  border-radius: 10px;
+  color: var(--ink-3);
+  font-weight: 500;
+  transition: background-color 260ms var(--ease), color 260ms var(--ease);
+}
+
+.new-row:hover {
+  background: var(--row-hover);
+  color: var(--ink);
+}
+
+.sb-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px 10px;
+}
+
+.spaces {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+/* A Space button. The active one takes its tint, and the switch eases between them. */
+.space-item {
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 26px;
+}
+
+.space {
+  position: absolute;
+  inset: 0;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--ink-2);
+  font-size: 11px;
+  font-weight: 600;
+  transition: background-color 320ms var(--ease), color 320ms var(--ease), box-shadow 320ms var(--ease), transform 420ms var(--ease);
+}
+
+.space:hover {
+  background: var(--row-hover);
+  color: var(--ink);
+}
+
+.space.active {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--tint) 22%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tint) 55%, transparent);
+  transform: scale(1.06);
+}
+
+.space-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--pop);
+  color: var(--ink-2);
+  box-shadow: 0 0 0 1px var(--base);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms var(--ease), color 160ms var(--ease), background-color 160ms var(--ease);
+}
+
+.space-remove svg {
+  width: 8px;
+  height: 8px;
+}
+
+.space-item:hover .space-remove,
+.space-item:focus-within .space-remove {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.space-remove:hover {
+  background: var(--pop);
+  color: #ff8f9b;
+}
+
+.space-confirm {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(7, 8, 12, 0.58);
+  backdrop-filter: blur(7px);
+}
+
+.space-confirm-card {
+  width: 100%;
+  max-width: 320px;
+  padding: 16px;
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  background: var(--pop);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.space-confirm-mark {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: rgba(255, 111, 125, 0.12);
+  color: #ff818e;
+}
+
+.space-confirm-card h2 {
+  margin: 0 0 6px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.space-confirm-card p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.space-confirm-card strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.space-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.space-confirm-button {
+  min-width: 78px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 8px;
+  background: var(--row-hover);
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 550;
+  transition: background-color 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
+}
+
+.space-confirm-button:hover {
+  background: var(--row-active);
+  color: var(--ink);
+}
+
+.space-confirm-button.danger {
+  background: #c94b5b;
+  color: #fff;
+}
+
+.space-confirm-button.danger:hover {
+  background: #e65b6b;
+}
+
+.space-confirm-button:active {
+  transform: scale(0.97);
+}
+
+.vault-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 31;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(7, 8, 12, 0.62);
+  backdrop-filter: blur(8px);
+}
+
+.vault-card {
+  width: 100%;
+  max-width: 380px;
+  max-height: calc(100% - 4px);
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  background: var(--pop);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.vault-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.vault-header > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.vault-header h2 {
+  margin: 2px 0 4px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.vault-header p {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.vault-close {
+  width: 24px;
+  height: 24px;
+}
+
+.vault-tabs {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  margin-bottom: 12px;
+  border-radius: 9px;
+  background: var(--row-hover);
+}
+
+.vault-tabs button {
+  flex: 1 1 50%;
+  height: 27px;
+  border-radius: 7px;
+  color: var(--ink-3);
+  font-size: 11px;
+}
+
+.vault-tabs button[aria-selected="true"] {
+  background: var(--row-active);
+  color: var(--ink);
+  box-shadow: var(--sheen);
+}
+
+.vault-view {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline) transparent;
+}
+
+.vault-form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.vault-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--ink-2);
+  font-size: 10.5px;
+}
+
+.vault-form input {
+  width: 100%;
+  min-width: 0;
+  height: 31px;
+  padding: 0 9px;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  outline: none;
+  background: var(--field);
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.vault-form input:focus {
+  border-color: color-mix(in srgb, var(--tint) 65%, var(--hairline));
+  background: var(--field-focus);
+}
+
+.vault-submit {
+  height: 31px;
+  margin-top: 2px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--tint) 27%, var(--pop));
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.vault-submit:hover {
+  background: color-mix(in srgb, var(--tint) 38%, var(--pop));
+}
+
+.vault-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 11px;
+}
+
+.vault-empty {
+  margin: 0;
+  padding: 8px 2px;
+  color: var(--ink-3);
+  font-size: 11px;
+}
+
+.vault-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+}
+
+.vault-item-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.vault-item-title,
+.vault-item-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vault-item-title {
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.vault-item-subtitle {
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: 10px;
+}
+
+.vault-item-actions {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.vault-item-actions button {
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 7px;
+  background: var(--row-hover);
+  color: var(--ink-2);
+  font-size: 10px;
+}
+
+.vault-item-actions button:hover {
+  background: var(--row-active);
+  color: var(--ink);
+}
+
+/* Settings popover, above the footer. */
+.pop {
+  position: absolute;
+  left: 10px;
+  bottom: 50px;
+  z-index: 20;
+  width: 232px;
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--pop);
+  box-shadow: var(--shadow), inset 0 0 0 1px var(--hairline);
+}
+
+.pop-title {
+  margin: 0 0 8px;
+  color: var(--ink-3);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.swatches {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--c);
+  transition: box-shadow 220ms var(--ease);
+}
+
+.swatch[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--pop), 0 0 0 3px var(--c);
+}
+
+.seg {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 10px;
+  background: var(--row-hover);
+}
+
+.seg button {
+  flex: 1 1 auto;
+  height: 26px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+
+.seg button[aria-pressed="true"] {
+  background: var(--row-active);
+  color: var(--ink);
+  box-shadow: var(--sheen);
+}
+
+.pop-action {
+  width: 100%;
+  min-height: 28px;
+  padding: 0 9px;
+  margin: 0 0 5px;
+  border-radius: 8px;
+  background: var(--row-hover);
+  color: var(--ink-2);
+  text-align: left;
+  font-size: 11px;
+}
+
+.pop-action:hover {
+  background: var(--row-active);
+  color: var(--ink);
+}
+
+.pop-note {
+  margin: 1px 2px 7px;
+  color: var(--ink-3);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* Drag the edge to change the sidebar width. */
+.resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 8px;
+  z-index: 5;
+  cursor: col-resize;
+}
+
+.resizer:hover {
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tint) 45%, transparent) 50%, transparent);
+}
+
+/* Context menu for tabs. */
+.menu {
+  position: fixed;
+  z-index: 40;
+  min-width: 196px;
+  padding: 5px;
+  border-radius: 12px;
+  background: var(--pop);
+  box-shadow: var(--shadow), inset 0 0 0 1px var(--hairline);
+}
+
+.menu button {
+  display: block;
+  width: 100%;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  color: var(--ink);
+  text-align: left;
+}
+
+.menu button:hover {
+  background: var(--row-hover);
+}
+
+/* Tabs on top, like Chrome and Firefox: one strip above the toolbar, with the Spaces at its left. */
+.tabstrip {
+  flex: none;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px 0 8px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tint) 11%, var(--base)) 0%, var(--base) 100%);
+}
+
+.ts-spaces {
+  flex: none;
+  overflow: visible;
+}
+
+.ts-tabs {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ts-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.ts-tab {
+  position: relative;
+  flex: 0 1 200px;
+  min-width: 44px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px 0 10px;
+  border-radius: 10px;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 260ms var(--ease), color 260ms var(--ease), box-shadow 260ms var(--ease), opacity 200ms var(--ease);
+}
+
+.ts-tab:hover {
+  background: var(--row-hover);
+  color: var(--ink);
+}
+
+.ts-tab.active {
+  background: var(--row-active);
+  color: var(--ink);
+  box-shadow: var(--sheen);
+}
+
+.ts-tab.split:not(.active) {
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--tint);
+}
+
+/* Pinned tabs keep only their favicon, as in Chrome. */
+.ts-tab.pinned {
+  flex: 0 0 auto;
+  width: 40px;
+  justify-content: center;
+  padding: 0;
+}
+
+.ts-tab.pinned .ts-title,
+.ts-tab.pinned .close {
+  display: none;
+}
+
+.ts-tab .ts-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ts-tab .close {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  color: var(--ink-2);
+  opacity: 0;
+  transition: opacity 200ms var(--ease), background-color 200ms var(--ease);
+}
+
+.ts-tab:hover .close,
+.ts-tab.active .close {
+  opacity: 1;
+}
+
+.ts-tab .close:hover {
+  background: var(--row-active);
+  color: var(--ink);
+}
+
+.ts-tab.dragging {
+  opacity: 0.45;
+}
+
+.ts-tab.drop-before {
+  box-shadow: inset 2px 0 0 var(--tint);
+}
+
+/* Top toolbar: navigation and the address field. */
+.chrome {
+  flex: none;
+  height: 46px;
+}
+
+.bookmark-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--base) 94%, var(--ink));
+}
+
+.bookmark-bar::-webkit-scrollbar { height: 3px; }
+.bookmark-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  max-width: 190px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--ink-2);
+  text-align: left;
+  cursor: pointer;
+}
+.bookmark-item:hover { background: var(--row-hover); color: var(--ink); }
+.bookmark-empty { padding: 0 8px; color: var(--ink-3); font-size: 12px; }
+.bookmark-favicon, .bookmark-favicon img {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  flex: none;
+  place-items: center;
+  border-radius: 3px;
+  color: var(--tint);
+  font-size: 10px;
+}
+.bookmark-favicon img { object-fit: contain; }
+.bookmark-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 45px;
+  padding: 0 10px 0 6px;
+}
+
+.icon-btn {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--ink-2);
+  transition: transform 500ms var(--ease), background-color 320ms var(--ease), color 320ms var(--ease), box-shadow 320ms var(--ease);
+}
+
+.icon-btn:hover {
+  background: var(--row-active);
+  color: var(--ink);
+  box-shadow: var(--sheen);
+}
+
+.icon-btn:active {
+  transform: scale(0.96);
+}
+
+.icon-btn svg {
+  transition: transform 600ms var(--ease);
+}
+
+.icon-btn:hover svg {
+  transform: translate3d(1px, -1px, 0) scale(1.05);
+}
+
+.icon-btn.on {
+  color: var(--tint);
+}
+
+/* Double bezel: a hairline shell holds the address core. */
+.address-shell {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 37px;
+  margin: 0 4px 0 6px;
+  padding: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.address {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0 3px 0 12px;
+  border-radius: 999px;
+  background: var(--field);
+  box-shadow: var(--sheen);
+  transition: background-color 420ms var(--ease), box-shadow 420ms var(--ease);
+}
+
+.address:focus-within {
+  background: var(--field-focus);
+  box-shadow: var(--sheen), 0 0 0 1px color-mix(in srgb, var(--tint) 45%, transparent);
+}
+
+.address input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.address input::placeholder {
+  color: var(--ink-3);
+}
+
+.address .icon-btn {
+  width: 27px;
+  height: 27px;
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+.lock {
+  width: 12px;
+  height: 12px;
+  color: var(--ink-3);
+}
+
+/* The speed readout: the load time of the last page, in a small capsule. */
+.readout {
+  flex: none;
+  max-width: 160px;
+  height: 20px;
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 20px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink-2);
+  font-size: 11.5px;
+}
+
+.readout:empty {
+  display: none;
+}
+
+/* A moving sheen while a page loads. Transform only. */
+.load {
+  position: relative;
+  height: 1px;
+  overflow: hidden;
+}
+
+.load.on::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 28%;
+  background: var(--tint);
+  animation: sweep 1.2s var(--ease) infinite;
+}
+
+/* A tab that is still loading shows motion, so a slow page does not look frozen: a ring turns around its
+   favicon and a short bar sweeps along the bottom of the tab. Both use transform or background position only. */
+.row.loading .fav,
+.ts-tab.loading .fav,
+.tile.loading .fav {
+  position: relative;
+  overflow: visible;
+}
+
+.row.loading .fav img,
+.ts-tab.loading .fav img,
+.tile.loading .fav img {
+  opacity: 0.55;
+}
+
+.row.loading .fav::after,
+.ts-tab.loading .fav::after,
+.tile.loading .fav::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--tint);
+  animation: tab-spin 0.9s linear infinite;
+}
+
+.row.loading::after,
+.ts-tab.loading::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 1px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--tint) 50%, transparent) 0 0 / 40% 100% no-repeat;
+  pointer-events: none;
+  animation: tab-sweep 1.2s linear infinite;
+}
+
+@keyframes tab-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes tab-sweep {
+  from { background-position: 0% 0; }
+  to { background-position: 100% 0; }
+}
+
+@keyframes sweep {
+  from { transform: translate3d(-100%, 0, 0); }
+  to { transform: translate3d(357%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

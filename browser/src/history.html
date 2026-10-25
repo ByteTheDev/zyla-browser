@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>History</title>
+  <style>
+    @font-face {
+      font-family: "Public Sans";
+      src: url("/font/public-sans.woff2") format("woff2");
+      font-weight: 400 700;
+      font-display: block;
+    }
+
+    :root {
+      --void: #0b0b0f;
+      --ink: #f4f5f9;
+      --ink-2: rgba(244, 245, 249, 0.66);
+      --ink-3: rgba(244, 245, 249, 0.42);
+      --glass-core: rgba(255, 255, 255, 0.05);
+      --glass-hover: rgba(255, 255, 255, 0.10);
+      --hairline: rgba(255, 255, 255, 0.10);
+      --sheen: inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+      --blur: blur(24px) saturate(160%);
+      --accent: #9dbcff;
+      --ease: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--void);
+      color: var(--ink);
+      font: 13px/1.45 "Public Sans", system-ui, sans-serif;
+      font-variant-numeric: tabular-nums;
+      overflow-x: hidden;
+    }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 64px 40px 56px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .tools {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .meta {
+      color: var(--ink-2);
+    }
+
+    .filter-shell {
+      width: 300px;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: inset 0 0 0 1px var(--hairline);
+    }
+
+    .filter {
+      display: flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: rgba(6, 6, 10, 0.5);
+      box-shadow: var(--sheen);
+      transition: background-color 420ms var(--ease), box-shadow 420ms var(--ease);
+    }
+
+    .filter:focus-within {
+      background: rgba(6, 6, 10, 0.7);
+      box-shadow: var(--sheen), 0 0 0 1px rgba(157, 188, 255, 0.4);
+    }
+
+    .filter input {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .filter input::placeholder { color: var(--ink-3); }
+
+    button.clear {
+      height: 36px;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: var(--glass-core);
+      box-shadow: var(--sheen), inset 0 0 0 1px var(--hairline);
+      -webkit-backdrop-filter: var(--blur);
+      backdrop-filter: var(--blur);
+      color: var(--ink);
+      font: inherit;
+      cursor: pointer;
+      transition: transform 500ms var(--ease), background-color 320ms var(--ease);
+    }
+
+    button.clear:hover { background: var(--glass-hover); }
+    button.clear:active { transform: scale(0.97); }
+    button.clear:disabled { color: var(--ink-3); cursor: default; }
+
+    button.clear:focus-visible,
+    .filter input:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    .panel {
+      padding: 6px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.03);
+      box-shadow: inset 0 0 0 1px var(--hairline);
+    }
+
+    .panel-core {
+      min-height: 120px;
+      padding: 8px;
+      border-radius: 25px;
+      background: var(--glass-core);
+      -webkit-backdrop-filter: var(--blur);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--sheen);
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 46px;
+      padding: 0 14px;
+      border-radius: 16px;
+      transition: background-color 360ms var(--ease), transform 560ms var(--ease);
+    }
+
+    li:hover {
+      background: var(--glass-hover);
+      transform: translate3d(2px, 0, 0);
+    }
+
+    li a {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    li a:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: -1px;
+      border-radius: 6px;
+    }
+
+    .host {
+      flex: 0 1 28%;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+
+    .when {
+      flex: none;
+      width: 150px;
+      text-align: right;
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+
+    .empty {
+      margin: 8px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      box-shadow: inset 0 0 0 1px var(--hairline);
+      color: var(--ink-2);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0);
+      transition: opacity 800ms var(--ease), transform 900ms var(--ease);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>History</h1>
+      <div class="tools">
+        <span class="meta" id="count"></span>
+        <button class="clear" id="clear" type="button">Clear history</button>
+      </div>
+    </header>
+    <div class="filter-shell reveal">
+      <div class="filter">
+        <input type="search" id="filter" placeholder="Filter by title or address" aria-label="Filter history" autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+    <div class="panel reveal" style="margin-top: 18px"><div class="panel-core">
+      <ul id="list"></ul>
+      <p class="empty" id="empty" hidden>Nothing visited yet. Pages you open will be listed here.</p>
+    </div></div>
+  </main>
+  <script>
+    (function () {
+      var HISTORY_KEY = 'tsgpui-browser.history';
+      var entries = [];
+
+      function readList(key) {
+        try { return JSON.parse(localStorage.getItem(key)) || []; } catch (error) { return []; }
+      }
+
+      function host(url) {
+        try { return new URL(url).host || url; } catch (error) { return url; }
+      }
+
+      function when(time) {
+        if (!time) return '';
+        return new Date(time).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+      }
+
+      function render() {
+        var query = document.getElementById('filter').value.trim().toLowerCase();
+        var list = document.getElementById('list');
+        var shown = entries.filter(function (item) {
+          return !query || (item.title || '').toLowerCase().indexOf(query) >= 0 || item.url.toLowerCase().indexOf(query) >= 0;
+        });
+        list.textContent = '';
+        shown.forEach(function (item) {
+          var row = document.createElement('li');
+          var link = document.createElement('a');
+          link.href = item.url;
+          link.textContent = item.title || item.url;
+          link.title = item.url;
+          var where = document.createElement('span');
+          where.className = 'host';
+          where.textContent = host(item.url);
+          var time = document.createElement('span');
+          time.className = 'when';
+          time.textContent = when(item.at);
+          row.appendChild(link);
+          row.appendChild(where);
+          row.appendChild(time);
+          list.appendChild(row);
+        });
+        document.getElementById('count').textContent = entries.length === 1 ? '1 page' : entries.length + ' pages';
+        document.getElementById('empty').hidden = entries.length > 0;
+        document.getElementById('clear').disabled = entries.length === 0;
+      }
+
+      document.getElementById('filter').addEventListener('input', render);
+      document.getElementById('clear').addEventListener('click', function () {
+        if (!window.confirm('Clear all history? Bookmarks are kept.')) return;
+        try { localStorage.removeItem(HISTORY_KEY); } catch (error) { /* storage unavailable */ }
+        entries = [];
+        render();
+      });
+
+      entries = readList(HISTORY_KEY);
+      render();
+
+      var blocks = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (items) {
+          items.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        blocks.forEach(function (block) { observer.observe(block); });
+      } else {
+        blocks.forEach(function (block) { block.classList.add('in'); });
+      }
+    })();
+  </script>
+</body>
+</html>

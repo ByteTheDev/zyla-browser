@@ -1,0 +1,17 @@
+{
+  "name": "zyla-browser",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": "https://github.com/GumballGaming/zyla-browser",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run host && tsgpui dev --project . --host host/target/release/tsgpui-browser-host.exe",
+    "build": "bun run host && tsgpui build --project . --host host/target/release/tsgpui-browser-host.exe",
+    "compile": "tsgpui compile --project .",
+    "host": "cargo build --release --manifest-path host/Cargo.toml",
+    "test": "cargo test --manifest-path host/Cargo.toml"
+  },
+  "devDependencies": {
+    "@rs/tsgpui": "file:vendor/rs-tsgpui-0.3.0.tgz"
+  }
+}

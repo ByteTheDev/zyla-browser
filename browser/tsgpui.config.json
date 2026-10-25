@@ -1,0 +1,10 @@
+{
+  "name": "zyla-browser",
+  "title": "Zyla Browser",
+  "renderer": "webview",
+  "window": {"width": 1280, "height": 820},
+  "html": "src/index.html",
+  "css": "src/styles.css",
+  "backend": "src/backend.ts",
+  "outDir": "dist"
+}

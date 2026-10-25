@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en" data-theme="system" data-tint="graphite">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zyla Browser</title>
+  <style>
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #121317; color: #f4f5f9; }
+    .app { opacity: 0; }
+    .startup { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; background: #121317; }
+  </style>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-startup="loading">
+  <h1 class="sr-only">Zyla Browser</h1>
+  <div class="startup" id="startup" role="status" aria-live="polite">
+    <div class="startup-content">
+      <div class="startup-mark" aria-hidden="true">
+        <span class="startup-glow"></span>
+        <img src="/assets/logo.png" alt="">
+      </div>
+      <p class="startup-title">Starting up Zyla</p>
+      <p class="startup-caption" id="startup-caption">Loading your tabs and getting everything ready</p>
+      <span class="startup-spinner" aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="app" id="app" data-sidebar="shown">
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+      <header class="sb-head">
+        <img class="sb-logo" src="/assets/logo.png" alt="">
+        <span class="space-name" id="space-name" title="Drag this header to the opposite edge to move the sidebar"></span>
+        <button class="sb-btn" id="tabs-top" type="button" aria-label="Move tabs to top" title="Move tabs to top (Firefox style)">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M3.5 9h17"/></svg>
+        </button>
+        <button class="sb-btn" id="sb-toggle" type="button" aria-label="Hide sidebar" title="Hide sidebar (Ctrl+S)">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M9.5 4.5v15"/></svg>
+        </button>
+      </header>
+      <div class="sb-scroll" id="sb-scroll">
+        <section class="group favorites" id="favorites" aria-label="Favorites" data-section="favorite" hidden></section>
+        <section class="group" id="pinned" aria-label="Pinned tabs" data-section="pinned" hidden></section>
+        <section class="group" id="regular" aria-label="Tabs" data-section="regular"></section>
+        <button class="new-row" id="new-tab" type="button" title="New tab (Ctrl+T)">
+          <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          <span>New tab</span>
+        </button>
+      </div>
+      <footer class="sb-foot">
+        <div class="spaces" id="spaces" aria-label="Spaces"></div>
+        <button class="sb-btn" id="new-space" type="button" aria-label="New space" title="New space">
+          <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button class="sb-btn" id="settings" type="button" aria-label="Settings" title="Settings">
+          <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.5 2.6-.08-.03a1.7 1.7 0 0 0-1.84.36 1.7 1.7 0 0 0-.58 1.3V21h-3v-.1a1.7 1.7 0 0 0-1.1-1.58 1.7 1.7 0 0 0-1.88.34l-.06.06-2.6-1.5.03-.08a1.7 1.7 0 0 0-.36-1.84 1.7 1.7 0 0 0-1.3-.58H5v-3h.1a1.7 1.7 0 0 0 1.58-1.1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.5-2.6.08.03a1.7 1.7 0 0 0 1.84-.36 1.7 1.7 0 0 0 .58-1.3V5h3v.1a1.7 1.7 0 0 0 1.1 1.58 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.6 1.5-.03.08a1.7 1.7 0 0 0 .36 1.84 1.7 1.7 0 0 0 1.3.58h.1v3h-.1A1.7 1.7 0 0 0 19.4 15Z" transform="translate(-1 -1)"/></svg>
+        </button>
+      </footer>
+      <div class="pop" id="settings-pop" hidden>
+        <p class="pop-title">Space colour</p>
+        <div class="swatches">
+          <button class="swatch" type="button" data-tint-choice="graphite" data-tint="graphite" aria-label="Graphite"></button>
+          <button class="swatch" type="button" data-tint-choice="indigo" data-tint="indigo" aria-label="Indigo"></button>
+          <button class="swatch" type="button" data-tint-choice="forest" data-tint="forest" aria-label="Forest"></button>
+          <button class="swatch" type="button" data-tint-choice="rose" data-tint="rose" aria-label="Rose"></button>
+          <button class="swatch" type="button" data-tint-choice="amber" data-tint="amber" aria-label="Amber"></button>
+        </div>
+        <p class="pop-title">Tabs</p>
+        <div class="seg" role="group" aria-label="Tab position">
+          <button type="button" data-layout-choice="side">Sidebar</button>
+          <button type="button" data-layout-choice="top">Top</button>
+        </div>
+        <p class="pop-title">Appearance</p>
+        <div class="seg" role="group" aria-label="Appearance">
+          <button type="button" data-theme-choice="system">System</button>
+          <button type="button" data-theme-choice="light">Light</button>
+          <button type="button" data-theme-choice="dark">Dark</button>
+        </div>
+        <p class="pop-title">Saved data</p>
+        <button class="pop-action" id="manage-vault" type="button">Passwords and cards</button>
+        <p class="pop-title">Extensions</p>
+        <button class="pop-action" id="add-extension" type="button">Install local extension…</button>
+        <p class="pop-note" id="extension-status">No local extensions installed.</p>
+        <p class="pop-note">Extensions use the permissions in their manifest. Some extension popup UI is not available in WebView2.</p>
+      </div>
+      <div class="space-confirm" id="space-confirm" hidden>
+        <section class="space-confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="space-confirm-title" aria-describedby="space-confirm-description">
+          <div class="space-confirm-mark" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/></svg>
+          </div>
+          <h2 id="space-confirm-title">Delete this space?</h2>
+          <p id="space-confirm-description">Open tabs in <strong id="space-delete-name"></strong> will be closed. You can reopen them later.</p>
+          <div class="space-confirm-actions">
+            <button class="space-confirm-button" id="space-delete-cancel" type="button">Cancel</button>
+            <button class="space-confirm-button danger" id="space-delete-confirm" type="button">Delete space</button>
+          </div>
+        </section>
+      </div>
+      <div class="vault-panel" id="vault-panel" hidden>
+        <section class="vault-card" role="dialog" aria-modal="true" aria-labelledby="vault-title">
+          <header class="vault-header">
+            <div>
+              <h2 id="vault-title">Passwords and cards</h2>
+              <p>Encrypted for this Windows account. Card security codes are never saved.</p>
+            </div>
+            <button class="sb-btn vault-close" id="vault-close" type="button" aria-label="Close vault" title="Close">
+              <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </header>
+          <div class="vault-tabs" role="tablist" aria-label="Vault type">
+            <button type="button" role="tab" data-vault-tab="passwords" aria-selected="true">Passwords</button>
+            <button type="button" role="tab" data-vault-tab="cards" aria-selected="false">Cards</button>
+          </div>
+          <section class="vault-view" id="vault-password-view" role="tabpanel">
+            <form class="vault-form" id="password-form" autocomplete="off">
+              <label>Website<input id="password-host" name="host" type="text" placeholder="example.com" required></label>
+              <label>Username<input name="username" type="text" autocomplete="off" required></label>
+              <label>Password<input name="password" type="password" autocomplete="new-password" required></label>
+              <button class="vault-submit" type="submit">Save password</button>
+            </form>
+            <div class="vault-list" id="password-list" aria-live="polite"></div>
+          </section>
+          <section class="vault-view" id="vault-card-view" role="tabpanel" hidden>
+            <form class="vault-form" id="card-form" autocomplete="off">
+              <label>Name on card<input name="name" type="text" autocomplete="cc-name" required></label>
+              <label>Card number<input name="number" type="text" inputmode="numeric" autocomplete="cc-number" maxlength="23" required></label>
+              <label>Expiration<input name="expiry" type="month" autocomplete="cc-exp" required></label>
+              <button class="vault-submit" type="submit">Save card</button>
+            </form>
+            <div class="vault-list" id="card-list" aria-live="polite"></div>
+          </section>
+        </section>
+      </div>
+      <div class="resizer" id="resizer" aria-hidden="true"></div>
+    </aside>
+    <div class="main">
+      <header class="tabstrip" id="tabstrip" aria-label="Tabs" hidden>
+        <div class="spaces ts-spaces" id="strip-spaces" aria-label="Spaces"></div>
+        <div class="ts-tabs" id="strip-tabs" role="tablist" data-section="regular"></div>
+        <button class="sb-btn" id="strip-new" type="button" aria-label="New tab" title="New tab (Ctrl+T)">
+          <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button class="sb-btn" id="strip-sidebar" type="button" aria-label="Show tabs in the sidebar" title="Show tabs in the sidebar">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M9.5 4.5v15"/></svg>
+        </button>
+      </header>
+      <header class="chrome">
+        <div class="bar">
+          <button class="icon-btn" id="sb-open" type="button" aria-label="Show sidebar" title="Show sidebar (Ctrl+S)" hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M9.5 4.5v15"/></svg>
+          </button>
+          <button class="icon-btn" id="back" type="button" aria-label="Back" title="Back (Alt+Left)">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button class="icon-btn" id="forward" type="button" aria-label="Forward" title="Forward (Alt+Right)">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <button class="icon-btn" id="reload" type="button" aria-label="Reload" title="Reload (Ctrl+R)">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+          </button>
+          <button class="icon-btn" id="home" type="button" aria-label="Home" title="Home">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v8h-5v-5h-6v5H4z"/></svg>
+          </button>
+          <button class="icon-btn" id="split" type="button" aria-label="Split view" aria-pressed="false" title="Split view (Ctrl+\)">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="7.5" height="13" rx="2.5"/><rect x="13" y="5.5" width="7.5" height="13" rx="2.5"/></svg>
+          </button>
+          <div class="address-shell">
+            <form class="address" id="address-form" autocomplete="off">
+              <svg class="lock" id="lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              <input id="address" type="text" name="address" role="combobox" aria-label="Address" aria-autocomplete="inline" aria-expanded="false" placeholder="Search Google or type a URL" spellcheck="false" autocomplete="off">
+              <span class="readout" id="readout" aria-live="polite"></span>
+              <button class="icon-btn" id="star" type="button" aria-label="Bookmark this page" aria-pressed="false" title="Bookmark (Ctrl+D)">
+                <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l2.5 5.2 5.5.7-4 3.8 1 5.5L12 16.8 7 19.2l1-5.5-4-3.8 5.5-.7z"/></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="load" id="load" aria-hidden="true"></div>
+      </header>
+      <nav class="bookmark-bar" id="bookmark-bar" aria-label="Bookmarks"></nav>
+    </div>
+  </div>
+  <div class="menu" id="menu" role="menu" hidden></div>
+  <script src="chrome.js"></script>
+</body>
+</html>

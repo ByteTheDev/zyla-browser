@@ -1,0 +1,51 @@
+name: Windows release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Install JavaScript dependencies
+        working-directory: browser
+        run: bun install --frozen-lockfile
+
+      - name: Package the browser
+        working-directory: browser
+        run: bun run build
+
+      - name: Prepare release archive
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          $stage = Join-Path $env:RUNNER_TEMP "zyla-release"
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          Copy-Item "browser/dist/zyla-browser.exe" $stage
+          Copy-Item "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md" $stage
+          Compress-Archive -Path (Join-Path $stage "*") -DestinationPath "Zyla-Browser-$version-windows-x64.zip" -Force
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Zyla Browser ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            browser/dist/zyla-browser.exe
+            Zyla-Browser-${{ github.ref_name }}-windows-x64.zip

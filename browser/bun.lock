@@ -1,0 +1,15 @@
+{
+  "lockfileVersion": 2,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "tsgpui-browser",
+      "devDependencies": {
+        "@rs/tsgpui": "file:vendor/rs-tsgpui-0.3.0.tgz",
+      },
+    },
+  },
+  "packages": {
+    "@rs/tsgpui": ["@rs/tsgpui@vendor/rs-tsgpui-0.3.0.tgz", { "bin": { "tsgpui": "dist/tsgpui.mjs" } }, "sha512-uA72vkkgBYpKCy5Wm+gUcEoT6WfA+bwMGDouoyffMqVogPXZ68V2qKHnDxX9ftVJRUdSLKSBe50BK57ldT18ow=="],
+  }
+}

@@ -1,0 +1,22 @@
+# Local design scratch files
+/.taste-skill/
+**/.taste/
+**/.taste-skill/
+**/.bun-cache/
+
+# JavaScript dependencies and build output
+**/node_modules/
+/browser/dist/
+/browser/host/target/
+**/out/
+
+# Local WebView2 profiles, test runs, and screenshots can contain browsing data
+/browser/testdata-*/
+/browser/shots/
+/browser/host/*.log
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
